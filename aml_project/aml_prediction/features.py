@@ -1,29 +1,42 @@
-from pathlib import Path
+"""Ingeniería de variables: encoding, escalado y balanceo de clases."""
 
-from loguru import logger
-from tqdm import tqdm
-import typer
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, RobustScaler
+from sklearn.impute import SimpleImputer
 
-from aml_prediction.config import PROCESSED_DATA_DIR
-
-app = typer.Typer()
-
-
-@app.command()
-def main(
-    # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
-    input_path: Path = PROCESSED_DATA_DIR / "dataset.csv",
-    output_path: Path = PROCESSED_DATA_DIR / "features.csv",
-    # -----------------------------------------
-):
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
-    logger.info("Generating features from dataset...")
-    for i in tqdm(range(10), total=10):
-        if i == 5:
-            logger.info("Something happened for iteration 5.")
-    logger.success("Features generation complete.")
-    # -----------------------------------------
+from aml_prediction import config
 
 
-if __name__ == "__main__":
-    app()
+def build_preprocessor():
+    """Construye el ColumnTransformer para variables numéricas y categóricas.
+
+    :return: sklearn ColumnTransformer sin ajustar (fit)
+    """
+    numeric_pipe = Pipeline([
+        ("imputer", SimpleImputer(strategy="median")),
+        ("scaler", RobustScaler()),
+    ])
+
+    categorical_pipe = Pipeline([
+        ("imputer", SimpleImputer(strategy="most_frequent")),
+        ("encoder", OneHotEncoder(handle_unknown="ignore")),
+    ])
+
+    return ColumnTransformer([
+        ("num", numeric_pipe, config.NUMERIC_COLUMNS),
+        ("cat", categorical_pipe, config.CATEGORICAL_COLUMNS),
+    ])
+
+
+def balance_with_smote(X_train, y_train):
+    """Aplica SMOTE solo sobre el conjunto de entrenamiento, ya transformado a numérico.
+
+    :param X_train: matriz numérica (después del ColumnTransformer)
+    :param y_train: etiquetas de entrenamiento
+    :return: X_train balanceado, y_train balanceado
+    """
+    from imblearn.over_sampling import SMOTE
+
+    smote = SMOTE(random_state=config.RANDOM_STATE)
+    return smote.fit_resample(X_train, y_train)

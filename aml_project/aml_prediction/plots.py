@@ -1,29 +1,22 @@
-from pathlib import Path
+"""Funciones de visualización reutilizables (equivalentes a tus celdas de matplotlib/seaborn)."""
 
-from loguru import logger
-from tqdm import tqdm
-import typer
-
-from aml_prediction.config import FIGURES_DIR, PROCESSED_DATA_DIR
-
-app = typer.Typer()
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 
-@app.command()
-def main(
-    # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
-    input_path: Path = PROCESSED_DATA_DIR / "dataset.csv",
-    output_path: Path = FIGURES_DIR / "plot.png",
-    # -----------------------------------------
-):
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
-    logger.info("Generating plot from data...")
-    for i in tqdm(range(10), total=10):
-        if i == 5:
-            logger.info("Something happened for iteration 5.")
-    logger.success("Plot generation complete.")
-    # -----------------------------------------
+def plot_class_distribution(y, title="Distribución de la variable objetivo"):
+    """Grafica el conteo de clases (equivalente a tu Figura de balance de clases)."""
+    fig, ax = plt.subplots(figsize=(6, 4))
+    sns.countplot(x=y, ax=ax)
+    ax.set_title(title)
+    return fig
 
 
-if __name__ == "__main__":
-    app()
+def plot_confusion(y_true, y_pred, labels=("<=50K", ">50K")):
+    """Grafica la matriz de confusión."""
+    cm = confusion_matrix(y_true, y_pred)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=labels)
+    fig, ax = plt.subplots(figsize=(6, 5))
+    disp.plot(ax=ax, cmap="Blues", values_format="d")
+    return fig

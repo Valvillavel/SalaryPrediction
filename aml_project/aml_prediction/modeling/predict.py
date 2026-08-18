@@ -1,30 +1,23 @@
-from pathlib import Path
+"""Inferencia con el modelo ya entrenado."""
 
-from loguru import logger
-from tqdm import tqdm
-import typer
+import joblib
 
-from aml_prediction.config import MODELS_DIR, PROCESSED_DATA_DIR
-
-app = typer.Typer()
+from aml_prediction import config
 
 
-@app.command()
-def main(
-    # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
-    features_path: Path = PROCESSED_DATA_DIR / "test_features.csv",
-    model_path: Path = MODELS_DIR / "model.pkl",
-    predictions_path: Path = PROCESSED_DATA_DIR / "test_predictions.csv",
-    # -----------------------------------------
-):
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
-    logger.info("Performing inference for model...")
-    for i in tqdm(range(10), total=10):
-        if i == 5:
-            logger.info("Something happened for iteration 5.")
-    logger.success("Inference complete.")
-    # -----------------------------------------
+def load_artifacts():
+    """Carga el modelo y el preprocesador guardados en disco."""
+    model = joblib.load(config.MODELS_DIR / "modelo_salary_rf.pkl")
+    preprocessor = joblib.load(config.MODELS_DIR / "preprocessor.pkl")
+    return model, preprocessor
 
 
-if __name__ == "__main__":
-    app()
+def predict(df_nuevo):
+    """Predice sobre un DataFrame nuevo con las mismas columnas de entrada.
+
+    :param df_nuevo: DataFrame con las columnas originales (sin la columna salary)
+    :return: array con las predicciones
+    """
+    model, preprocessor = load_artifacts()
+    X = preprocessor.transform(df_nuevo)
+    return model.predict(X)
