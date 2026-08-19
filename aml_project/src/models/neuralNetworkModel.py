@@ -1,9 +1,8 @@
 """Modelo de Redes Neuronales"""
 
 import numpy as np
-from tensorflow import tensorflow
 from keras import layers, callbacks, Sequential, metrics, models
-from baseModel import BaseModel
+from .baseModel import BaseModel
 
 
 class NeuralNetworkModel(BaseModel):

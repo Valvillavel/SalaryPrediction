@@ -1,15 +1,16 @@
 """Modelo de Random Forest"""
 
 import joblib
-from sklearn.linear_model import LogisticRegression
-from baseModel import BaseModel
+from sklearn.ensemble import RandomForestClassifier
+from .baseModel import BaseModel
+from src.config import RANDOM_STATE
 
 
-class LogisticRegressionModel(BaseModel):
-    def __init__(self, random_state=42):
-        super().__init__("Logistic Regression")
-        self.model = LogisticRegression(max_iter=1000, class_weight="balanced",
-                                        random_state=random_state)
+class RandomForestModel(BaseModel):
+    def __init__(self, random_state=RANDOM_STATE):
+        super().__init__("Random Forest")
+        self.model = RandomForestClassifier(
+            n_estimators=100, max_depth=15, class_weight='balanced', random_state=random_state, n_jobs=-1)
 
     def fit(self, X_train, y_train):
         self.model.fit(X_train, y_train)
