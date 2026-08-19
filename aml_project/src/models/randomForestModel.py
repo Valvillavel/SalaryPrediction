@@ -2,7 +2,7 @@
 
 import joblib
 from sklearn.linear_model import LogisticRegression
-from .base_model import BaseModel
+from baseModel import BaseModel
 
 
 class LogisticRegressionModel(BaseModel):

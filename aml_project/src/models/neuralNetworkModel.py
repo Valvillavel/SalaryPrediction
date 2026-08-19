@@ -1,15 +1,15 @@
 """Modelo de Redes Neuronales"""
 
 import numpy as np
-from tensorflow import keras
-from tensorflow.keras import layers, callbacks
-from .base_model import BaseModel
+from tensorflow import tensorflow
+from keras import layers, callbacks, Sequential, metrics, models
+from baseModel import BaseModel
 
 
 class NeuralNetworkModel(BaseModel):
     def __init__(self, input_dim):
         super().__init__("Neural Network")
-        self.model = keras.Sequential([
+        self.model = Sequential([
             layers.Dense(64, activation="relu", input_shape=(input_dim,)),
             layers.Dropout(0.3),
             layers.Dense(32, activation="relu"),
@@ -18,8 +18,8 @@ class NeuralNetworkModel(BaseModel):
         ])
         self.model.compile(
             optimizer="adam", loss="binary_crossentropy",
-            metrics=["accuracy", keras.metrics.Precision(),
-                     keras.metrics.Recall(), keras.metrics.AUC(name="auc")],
+            metrics=["accuracy", metrics.Precision(),
+                     metrics.Recall(), metrics.AUC(name="auc")],
         )
         self.history = None
 
@@ -43,5 +43,5 @@ class NeuralNetworkModel(BaseModel):
         self.model.save(path)
 
     def load(self, path):
-        self.model = keras.models.load_model(path)
+        self.model = models.load_model(path)
         return self
