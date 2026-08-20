@@ -189,4 +189,7 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-guia_integracion_dvc_poo_salary.md
+
+# MLflow
+mlruns/
+mlartifacts/

@@ -1,0 +1,3 @@
+['remote "storage"']
+    gdrive_client_id = ***REMOVED***
+    gdrive_client_secret = ***REMOVED***

@@ -37,7 +37,7 @@ stages:
       size: 2380
     params:
       params.yaml:
-        prepare.random_state: 42
+        prepare.random_state: 50
         prepare.split_ratio: 0.2
         train.max_depth: 12
         train.n_estimators: 200
@@ -45,17 +45,17 @@ stages:
     outs:
     - path: metrics/eval.json
       hash: md5
-      md5: 22f80349d0688f5ea4f5c1ea7e9c3012
-      size: 149
+      md5: 160af56383ad1b40d820cd09f49e2764
+      size: 148
     - path: metrics/plots.csv
       hash: md5
-      md5: bc0ea6ba413aab95327eb0e4efe7f634
-      size: 80742
+      md5: 8a675be4738d13d76f66ff8ef04c0775
+      size: 80793
     - path: models/modelo_salary_rf.pkl
       hash: md5
-      md5: 9b8108e5dc77c7254797f77fdcccb1f1
-      size: 16322105
+      md5: 75df832f2d1aeaae2f66b35d2350e308
+      size: 16265145
     - path: models/preprocessor.pkl
       hash: md5
-      md5: a8a81d425233795df4374305c6c85049
+      md5: 83932824e62faaca032c901ffe720de1
       size: 6464

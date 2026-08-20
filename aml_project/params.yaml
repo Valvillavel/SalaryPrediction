@@ -1,6 +1,6 @@
 prepare:
   split_ratio: 0.2
-  random_state: 42
+  random_state: 50
 
 train:
   n_estimators: 200

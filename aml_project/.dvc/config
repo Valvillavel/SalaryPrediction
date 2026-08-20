@@ -1,4 +1,6 @@
 [core]
     remote = gdrive_remote
 ['remote "gdrive_remote"']
-    url = C:\dvc_storage
+    url = gdrive://1evpUjsWTrHQA5Z-pfe0QJmECixztztKk
+    gdrive_client_id = ***REMOVED***
+    gdrive_client_secret = ***REMOVED***
