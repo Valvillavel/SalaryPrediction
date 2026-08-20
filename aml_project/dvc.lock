@@ -1,0 +1,61 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python src/data/make_dataset.py
+    deps:
+    - path: aml_prediction/dataset.py
+      hash: md5
+      md5: 5580d628d69dfb46580c197cb9da87c1
+      size: 2064
+    - path: data/raw/salary.csv
+      hash: md5
+      md5: e853f1235e4396489eb58e2a4cf38556
+      size: 3844217
+    - path: src/data/make_dataset.py
+      hash: md5
+      md5: ae59238f7dd716666b32c5660aa126d2
+      size: 833
+    outs:
+    - path: data/processed/clean_salary.csv
+      hash: md5
+      md5: 795c7b271be616422245931dbf1f8cba
+      size: 3544261
+  train:
+    cmd: python src/models/train_model.py
+    deps:
+    - path: aml_prediction/features.py
+      hash: md5
+      md5: 8c14948873ae87b7e62f2ec1e420085e
+      size: 1418
+    - path: data/processed/clean_salary.csv
+      hash: md5
+      md5: 795c7b271be616422245931dbf1f8cba
+      size: 3544261
+    - path: src/models/train_model.py
+      hash: md5
+      md5: b0129f24b64849b89608edd3a56a2d82
+      size: 2380
+    params:
+      params.yaml:
+        prepare.random_state: 42
+        prepare.split_ratio: 0.2
+        train.max_depth: 12
+        train.n_estimators: 200
+        train.target_col: salary
+    outs:
+    - path: metrics/eval.json
+      hash: md5
+      md5: 22f80349d0688f5ea4f5c1ea7e9c3012
+      size: 149
+    - path: metrics/plots.csv
+      hash: md5
+      md5: bc0ea6ba413aab95327eb0e4efe7f634
+      size: 80742
+    - path: models/modelo_salary_rf.pkl
+      hash: md5
+      md5: 9b8108e5dc77c7254797f77fdcccb1f1
+      size: 16322105
+    - path: models/preprocessor.pkl
+      hash: md5
+      md5: a8a81d425233795df4374305c6c85049
+      size: 6464
