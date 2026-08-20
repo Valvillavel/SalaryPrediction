@@ -1,0 +1,23 @@
+artifact_path: file:D:/UMSS/Diplomado/MODULO 5/Labos/SalatyPrediction/aml_project/mlruns/1/models/m-a00731c549c94442b36519b0ef64406a/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.skops
+    predict_fn: predict
+    python_version: 3.13.12
+  sklearn:
+    code: null
+    pickled_model: model.skops
+    serialization_format: skops
+    sklearn_version: 1.9.0
+    skops_trusted_types: null
+mlflow_version: 3.15.1
+model_id: m-a00731c549c94442b36519b0ef64406a
+model_size_bytes: 16134824
+model_uuid: m-a00731c549c94442b36519b0ef64406a
+prompts: null
+run_id: 4816ac50638f41879e789824ac56a519
+utc_time_created: '2026-08-20 13:48:07.671978'
