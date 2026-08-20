@@ -12,8 +12,13 @@ class RandomForestTuner:
         "min_samples_split": [2, 5, 10],
         "min_samples_leaf": [1, 2, 4],
         "max_features": ["sqrt", "log2", None],
-        "class_weight": ["balanced", "balanced_subsample",
-                         {0: 1, 1: 2}, {0: 1, 1: 3}, {0: 1, 1: 4}],
+        "class_weight": [
+            "balanced",
+            "balanced_subsample",
+            {" <=50K": 1, " >50K": 2},
+            {" <=50K": 1, " >50K": 3},
+            {" <=50K": 1, " >50K": 4},
+        ],
     }
 
     def __init__(self, n_iter=50, cv_folds=5, random_state=42):

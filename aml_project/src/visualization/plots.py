@@ -2,11 +2,14 @@
 
 import matplotlib.pyplot as plt
 import seaborn as sns
+from pathlib import Path
 
 
 class PlotHelper:
     def __init__(self, output_dir):
-        self.output_dir = output_dir
+        self.output_dir = Path(output_dir)
+        # ← agregar esta línea
+        self.output_dir.mkdir(parents=True, exist_ok=True)
         sns.set_style("whitegrid")
         plt.rcParams["figure.figsize"] = (12, 6)
 

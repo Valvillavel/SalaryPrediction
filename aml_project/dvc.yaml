@@ -1,0 +1,74 @@
+stages:
+  preprocess:
+    cmd: python -m src.stages.preprocess
+    deps:
+      - data/raw/salary.csv
+      - src/data/dataLoader.py
+      - src/features/salaryPreprocessor.py
+    params:
+      - preprocessing.test_size
+      - preprocessing.random_state
+    outs:
+      - data/processed/X_train_processed.csv
+      - data/processed/X_test_processed.csv
+      - data/processed/y_train.csv
+      - data/processed/y_test.csv
+      - models/preprocessor.pkl
+
+  train_logreg:
+    cmd: python -m src.stages.train_logreg
+    deps:
+      - data/processed/X_train_processed.csv
+      - data/processed/y_train.csv
+      - src/models/logisticRegressionModel.py
+    outs:
+      - models/logreg_model.pkl
+
+  train_rf:
+    cmd: python -m src.stages.train_rf
+    deps:
+      - data/processed/X_train_processed.csv
+      - data/processed/y_train.csv
+      - src/models/randomForestModel.py
+    outs:
+      - models/rf_model.pkl
+
+  train_nn:
+    cmd: python -m src.stages.train_nn
+    deps:
+      - data/processed/X_train_processed.csv
+      - data/processed/y_train.csv
+      - src/models/neuralNetworkModel.py
+    params:
+      - neural_network.epochs
+      - neural_network.batch_size
+    outs:
+      - models/neural_network_model.keras
+
+  evaluate:
+    cmd: python -m src.stages.evaluate
+    deps:
+      - data/processed/X_test_processed.csv
+      - data/processed/y_test.csv
+      - models/logreg_model.pkl
+      - models/rf_model.pkl
+      - models/neural_network_model.keras
+      - src/models/modelEvaluator.py
+    metrics:
+      - reports/metrics.json:
+          cache: false
+    outs:
+      - reports/figures
+
+  tune_rf:
+    cmd: python -m src.stages.tune_rf
+    deps:
+      - data/processed/X_train_processed.csv
+      - data/processed/y_train.csv
+      - src/models/randomForestTuner.py
+    params:
+      - tuner.n_iter
+      - tuner.cv_folds
+    outs:
+      - models/random_forest_tuned.pkl
+      - models/random_search_rf.pkl
