@@ -1,0 +1,34 @@
+stages:
+  preprocess:
+    cmd: python src/data/make_dataset.py
+    deps:
+      - src/data/make_dataset.py
+      - aml_prediction/dataset.py
+      - data/raw/salary.csv
+    outs:
+      - data/processed/clean_salary.csv
+
+  train:
+    cmd: python src/models/train_model.py
+    deps:
+      - src/models/train_model.py
+      - aml_prediction/features.py
+      - data/processed/clean_salary.csv
+    params:
+      - prepare.split_ratio
+      - prepare.random_state
+      - train.n_estimators
+      - train.max_depth
+      - train.target_col
+    outs:
+      - models/modelo_salary_rf.pkl
+      - models/preprocessor.pkl
+    metrics:
+      - metrics/eval.json:
+          cache: false
+    plots:
+      - metrics/plots.csv:
+          template: confusion
+          x: predicted
+          y: actual
+          cache: false

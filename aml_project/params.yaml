@@ -1,0 +1,8 @@
+prepare:
+  split_ratio: 0.2
+  random_state: 42
+
+train:
+  n_estimators: 200
+  max_depth: 12
+  target_col: "salary"
