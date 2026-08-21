@@ -6,4 +6,13 @@ python-dotenv
 ruff
 tqdm
 typer
+mlflow
+dvc[gdrive]
+matplotlib
+seaborn
+scikit-learn
+pandas
+pyyaml
+imbalanced-learn
+joblib
 -e .
