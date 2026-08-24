@@ -193,3 +193,8 @@ cython_debug/
 # MLflow
 mlruns/
 mlartifacts/
+
+# DVC - Ignorar credenciales locales
+.dvc/config.local
+.dvc/tmp/
+.dvc/cache/
