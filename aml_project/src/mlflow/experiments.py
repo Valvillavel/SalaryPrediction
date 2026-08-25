@@ -3,18 +3,18 @@ import mlflow
 import mlflow.sklearn
 import pandas as pd
 import numpy as np
-import joblib
+from src.data.dataLoader import DataLoader
+from src.features.salaryPreprocessor import SalaryPreprocessor
+from src.config import RAW_DATA_PATH
 from pathlib import Path
 from typing import Dict, Any
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
-from keras import layers, callbacks, Sequential, metrics, models
+from keras import layers, Sequential, metrics
 import sys
-sys.path.append(str(Path(__file__).resolve().parents[2]))
 from src import config
 from src.models.logisticRegressionModel import LogisticRegressionModel
 from src.models.randomForestModel import RandomForestModel
 from src.models.neuralNetworkModel import NeuralNetworkModel
-from src.models.randomForestTuner import RandomForestTuner
 from src.models.modelEvaluator import ModelEvaluator
 from src.visualization.plots import PlotHelper
 
@@ -41,9 +41,6 @@ class MLflowExperimentManager:
         
         mlflow.set_tracking_uri(self.tracking_uri)
         mlflow.set_experiment(self.experiment_name)
-        
-        print(f"MLflow configurado: {self.experiment_name}")
-        print(f"Tracking URI: {self.tracking_uri}")
 
     def get_data_version(self) -> str:
         """Obtiene la versión del dataset desde DVC/Git."""
@@ -59,11 +56,7 @@ class MLflowExperimentManager:
 
     def run_logistic_regression_experiments(self, X_train, X_test, y_train, y_test, y_train_bin, y_test_bin):
         """Ejecuta experimentos de Logistic Regression."""
-        
-        print("\n" + "="*60)
-        print("🧪 EXPERIMENTO 1: Logistic Regression (Base)")
-        print("="*60)
-        
+
         lr_base = LogisticRegressionModel(random_state=42)
         
         with mlflow.start_run(run_name="LogisticRegression_Exp1_Base") as run:
@@ -103,14 +96,7 @@ class MLflowExperimentManager:
                 registered_model_name="LogisticRegression_Model"
             )
             
-            print(f"✅ Experimento 1 completado - Run ID: {run.info.run_id}")
-            print(f"📊 Accuracy: {metrics['Accuracy']:.4f}, F1: {metrics['F1-Score']:.4f}")
-        
         # Experimento 2: Logistic Regression con parámetros modificados
-        print("\n" + "="*60)
-        print("🧪 EXPERIMENTO 2: Logistic Regression (Tuned)")
-        print("="*60)
-        
         lr_tuned = LogisticRegressionModel(random_state=99)
         
         with mlflow.start_run(run_name="LogisticRegression_Exp2_Tuned") as run:
@@ -152,18 +138,11 @@ class MLflowExperimentManager:
                 input_example=input_example,
                 registered_model_name="LogisticRegression_Model"
             )
-            
-            print(f"✅ Experimento 2 completado - Run ID: {run.info.run_id}")
-            print(f"📊 Accuracy: {metrics['Accuracy']:.4f}, F1: {metrics['F1-Score']:.4f}")
-
+        
     def run_random_forest_experiments(self, X_train, X_test, y_train, y_test, y_train_bin, y_test_bin):
         """Ejecuta experimentos de Random Forest."""
         
         # Experimento 1: Random Forest con parámetros base
-        print("\n" + "="*60)
-        print("🧪 EXPERIMENTO 1: Random Forest (Base)")
-        print("="*60)
-        
         rf_base = RandomForestModel(random_state=42)
         
         with mlflow.start_run(run_name="RandomForest_Exp1_Base") as run:
@@ -200,14 +179,7 @@ class MLflowExperimentManager:
                 registered_model_name="RandomForest_Model"
             )
             
-            print(f"✅ Experimento 1 completado - Run ID: {run.info.run_id}")
-            print(f"📊 Accuracy: {metrics['Accuracy']:.4f}, F1: {metrics['F1-Score']:.4f}")
-        
         # Experimento 2: Random Forest con parámetros modificados
-        print("\n" + "="*60)
-        print("🧪 EXPERIMENTO 2: Random Forest (Tuned)")
-        print("="*60)
-        
         rf_tuned = RandomForestModel(random_state=99)
         
         with mlflow.start_run(run_name="RandomForest_Exp2_Tuned") as run:
@@ -248,17 +220,10 @@ class MLflowExperimentManager:
                 registered_model_name="RandomForest_Model"
             )
             
-            print(f"✅ Experimento 2 completado - Run ID: {run.info.run_id}")
-            print(f"📊 Accuracy: {metrics['Accuracy']:.4f}, F1: {metrics['F1-Score']:.4f}")
-
     def run_neural_network_experiments(self, X_train, X_test, y_train, y_test, y_train_bin, y_test_bin):
         """Ejecuta experimentos de Neural Network."""
         
         # Experimento 1: Neural Network con parámetros base
-        print("\n" + "="*60)
-        print("🧪 EXPERIMENTO 1: Neural Network (Base)")
-        print("="*60)
-        
         nn_base = NeuralNetworkModel(input_dim=X_train.shape[1])
         
         with mlflow.start_run(run_name="NeuralNetwork_Exp1_Base") as run:
@@ -295,14 +260,7 @@ class MLflowExperimentManager:
                 registered_model_name="NeuralNetwork_Model"
             )
             
-            print(f"✅ Experimento 1 completado - Run ID: {run.info.run_id}")
-            print(f"📊 Accuracy: {eval_metrics['Accuracy']:.4f}, F1: {eval_metrics['F1-Score']:.4f}")
-        
         # Experimento 2: Neural Network con parámetros modificados
-        print("\n" + "="*60)
-        print("🧪 EXPERIMENTO 2: Neural Network (Tuned)")
-        print("="*60)
-        
         nn_tuned = NeuralNetworkModel(input_dim=X_train.shape[1])
         
         with mlflow.start_run(run_name="NeuralNetwork_Exp2_Tuned") as run:
@@ -354,19 +312,8 @@ class MLflowExperimentManager:
                 registered_model_name="NeuralNetwork_Model"
             )
             
-            print(f"✅ Experimento 2 completado - Run ID: {run.info.run_id}")
-            print(f"📊 Accuracy: {eval_metrics['Accuracy']:.4f}, F1: {eval_metrics['F1-Score']:.4f}")
-
     def run_all_experiments(self, X_train, X_test, y_train, y_test, y_train_bin, y_test_bin):
         """Ejecuta todos los experimentos de todos los modelos."""
-        
-        print("\n" + "="*60)
-        print("🚀 INICIANDO EXPERIMENTOS MLflow")
-        print("="*60)
-        print(f"📊 Experiment Name: {self.experiment_name}")
-        print(f"📁 Data version: {self.get_data_version()}")
-        print(f"📊 X_train shape: {X_train.shape}, X_test shape: {X_test.shape}")
-        print("="*60 + "\n")
         
         # Logistic Regression
         self.run_logistic_regression_experiments(X_train, X_test, y_train, y_test, y_train_bin, y_test_bin)
@@ -376,26 +323,10 @@ class MLflowExperimentManager:
         
         # Neural Network
         self.run_neural_network_experiments(X_train, X_test, y_train, y_test, y_train_bin, y_test_bin)
-        
-        print("\n" + "="*60)
-        print("✅ ¡TODOS LOS EXPERIMENTOS COMPLETADOS!")
-        print("="*60)
-        print("📊 Para ver los resultados, ejecuta: mlflow ui")
-        print("🌐 Abre en tu navegador: http://localhost:5000")
-        print("="*60)
 
 
 def main():
     """Función principal para ejecutar los experimentos."""
-    
-    print("="*60)
-    print("🔧 CARGANDO DATOS Y PREPROCESADORES")
-    print("="*60)
-    
-    import joblib
-    from src.data.dataLoader import DataLoader
-    from src.features.salaryPreprocessor import SalaryPreprocessor
-    from src.config import RAW_DATA_PATH, PROCESSED_DATA_DIR
     
     # Cargar datos raw
     loader = DataLoader(RAW_DATA_PATH)
@@ -409,11 +340,7 @@ def main():
     # Convertir labels a binario
     y_train_bin = (y_train == config.POSITIVE_LABEL).astype(int)
     y_test_bin = (y_test == config.POSITIVE_LABEL).astype(int)
-    
-    print(f"✅ Datos cargados correctamente")
-    print(f"📊 X_train: {X_train_p.shape}, X_test: {X_test_p.shape}")
-    print(f"📊 y_train: {y_train.shape[0]}, y_test: {y_test.shape[0]}")
-    
+
     # Ejecutar experimentos
     manager = MLflowExperimentManager(
         experiment_name="Salary_Prediction_Experiments",
