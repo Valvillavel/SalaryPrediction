@@ -1,0 +1,33 @@
+artifact_path: file:C:/Users/LENOVO/Documents/SalatyPrediction/aml_project/mlruns/2/models/m-3a9217bb4cfe45979e0ad9a11eb5b59e/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.skops
+    predict_fn: predict
+    python_version: 3.12.6
+  sklearn:
+    code: null
+    pickled_model: model.skops
+    serialization_format: skops
+    sklearn_version: 1.9.0
+    skops_trusted_types: null
+is_signature_from_type_hint: false
+mlflow_version: 3.15.1
+model_id: m-3a9217bb4cfe45979e0ad9a11eb5b59e
+model_size_bytes: 46117006
+model_uuid: m-3a9217bb4cfe45979e0ad9a11eb5b59e
+prompts: null
+run_id: f3eccd2e70c4466a8709f3dd61a46b47
+saved_input_example_info:
+  artifact_path: input_example.json
+  serving_input_path: serving_input_example.json
+  type: ndarray
+signature:
+  inputs: '[{"type": "tensor", "tensor-spec": {"dtype": "float64", "shape": [-1, 108]}}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "object", "shape": [-1]}}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2026-08-24 20:14:52.140651'

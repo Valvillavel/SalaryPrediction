@@ -1,0 +1,23 @@
+artifact_path: file:C:/Users/LENOVO/Documents/SalatyPrediction/aml_project/mlruns/1/models/m-6877b6025731486f95424241a465d3f0/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.skops
+    predict_fn: predict
+    python_version: 3.12.6
+  sklearn:
+    code: null
+    pickled_model: model.skops
+    serialization_format: skops
+    sklearn_version: 1.9.0
+    skops_trusted_types: null
+mlflow_version: 3.15.1
+model_id: m-6877b6025731486f95424241a465d3f0
+model_size_bytes: 33843636
+model_uuid: m-6877b6025731486f95424241a465d3f0
+prompts: null
+run_id: cce6a24ddb0a48378df876bc550b7673
+utc_time_created: '2026-08-24 17:40:37.690013'

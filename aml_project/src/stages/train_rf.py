@@ -4,6 +4,8 @@ from src import config
 from src.models.randomForestModel import RandomForestModel
 from src.tracking import start_run
 
+import matplotlib
+matplotlib.use('Agg')
 
 def main():
     X_train = pd.read_csv(config.PROCESSED_DATA_DIR / "X_train_processed.csv")

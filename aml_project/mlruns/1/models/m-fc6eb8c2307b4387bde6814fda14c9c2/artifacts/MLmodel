@@ -1,0 +1,20 @@
+artifact_path: file:C:/Users/LENOVO/Documents/SalatyPrediction/aml_project/mlruns/1/models/m-fc6eb8c2307b4387bde6814fda14c9c2/artifacts
+flavors:
+  keras:
+    data: data
+    keras_backend: tensorflow
+    keras_version: 3.15.1
+    save_exported_model: false
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.keras
+    python_version: 3.12.6
+mlflow_version: 3.15.1
+model_id: m-fc6eb8c2307b4387bde6814fda14c9c2
+model_size_bytes: 139695
+model_uuid: m-fc6eb8c2307b4387bde6814fda14c9c2
+prompts: null
+run_id: b9f3af9dfa8d43faaf42b671c6894985
+utc_time_created: '2026-08-23 21:51:40.756121'
