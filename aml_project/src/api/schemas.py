@@ -1,41 +1,36 @@
-"""Esquemas Pydantic de entrada y salida para la API de aml_prediction."""
+"""Esquemas Pydantic de entrada/salida del API de inferencia."""
 
-from typing import List, Optional
-
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
-class SalaryFeatures(BaseModel):
-    """Representa una fila de entrada, con los mismos nombres de columna que salary.csv."""
+class SalaryInput(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
 
-    age: int
-    workclass: str
-    fnlwgt: int
-    education: str
-    education_num: int = Field(..., alias="education-num")
-    marital_status: str = Field(..., alias="marital-status")
-    occupation: str
-    relationship: str
-    race: str
-    sex: str
-    capital_gain: int = Field(..., alias="capital-gain")
-    capital_loss: int = Field(..., alias="capital-loss")
-    hours_per_week: int = Field(..., alias="hours-per-week")
-    native_country: str = Field(..., alias="native-country")
-
-    class Config:
-        populate_by_name = True  # Pydantic v2 - acepta tanto alias como nombre real
-
-
-class PredictionRequest(BaseModel):
-    """Payload del endpoint /predict: una lista de personas a evaluar."""
-    data: List[SalaryFeatures]
+    age: int = Field(ge=17, le=100, examples=[39])
+    workclass: str = Field(examples=["Private"])
+    fnlwgt: int = Field(examples=[77516])
+    education: str = Field(examples=["Bachelors"])
+    education_num: int = Field(alias="education-num", examples=[13])
+    marital_status: str = Field(
+        alias="marital-status", examples=["Never-married"])
+    occupation: str = Field(examples=["Adm-clerical"])
+    relationship: str = Field(examples=["Not-in-family"])
+    race: str = Field(examples=["White"])
+    sex: str = Field(examples=["Male"])
+    capital_gain: int = Field(alias="capital-gain", ge=0, examples=[0])
+    capital_loss: int = Field(alias="capital-loss", ge=0, examples=[0])
+    hours_per_week: int = Field(
+        alias="hours-per-week", ge=1, le=99, examples=[40])
+    native_country: str = Field(
+        alias="native-country", examples=["United-States"])
 
 
-class PredictionResult(BaseModel):
-    """Resultado de una predicción individual."""
-    index: int
-    prediction_code: int
-    salary_class: str
-    confidence_score: Optional[float] = None
-    probabilities_detail: Optional[dict] = None
+class PredictionOutput(BaseModel):
+    salary_prediction: str
+    probability_above_50k: float
+    model_used: str
+
+
+class HealthResponse(BaseModel):
+    status: str
+    model_loaded: bool

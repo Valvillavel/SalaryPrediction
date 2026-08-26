@@ -1,2 +1,6 @@
-/modelo_salary_rf.pkl
+/logreg_model.pkl
+/neural_network_model.keras
 /preprocessor.pkl
+/random_forest_tuned.pkl
+/random_search_rf.pkl
+/rf_model.pkl

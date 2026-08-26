@@ -1,61 +1,171 @@
 schema: '2.0'
 stages:
   preprocess:
-    cmd: python src/data/make_dataset.py
+    cmd: python -m src.stages.preprocess
     deps:
-    - path: aml_prediction/dataset.py
-      hash: md5
-      md5: 5580d628d69dfb46580c197cb9da87c1
-      size: 2064
     - path: data/raw/salary.csv
       hash: md5
       md5: e853f1235e4396489eb58e2a4cf38556
       size: 3844217
-    - path: src/data/make_dataset.py
+    - path: src/data/dataLoader.py
       hash: md5
-      md5: ae59238f7dd716666b32c5660aa126d2
-      size: 833
-    outs:
-    - path: data/processed/clean_salary.csv
+      md5: 24b0bd93f55c01e3a955fb55f1ff8be0
+      size: 523
+    - path: src/features/salaryPreprocessor.py
       hash: md5
-      md5: 795c7b271be616422245931dbf1f8cba
-      size: 3544261
-  train:
-    cmd: python src/models/train_model.py
-    deps:
-    - path: aml_prediction/features.py
-      hash: md5
-      md5: 8c14948873ae87b7e62f2ec1e420085e
-      size: 1418
-    - path: data/processed/clean_salary.csv
-      hash: md5
-      md5: 795c7b271be616422245931dbf1f8cba
-      size: 3544261
-    - path: src/models/train_model.py
-      hash: md5
-      md5: e258cf8dd32543c9b70442c2a1a74d5f
-      size: 5455
+      md5: c0c7e857587719fe15d77aaf15ac1aea
+      size: 2856
     params:
       params.yaml:
-        prepare.random_state: 50
-        prepare.split_ratio: 0.2
-        train.max_depth: 12
-        train.n_estimators: 200
-        train.target_col: salary
+        preprocessing.random_state: 42
+        preprocessing.test_size: 0.3
     outs:
-    - path: metrics/eval.json
+    - path: data/processed/X_test_processed.csv
       hash: md5
-      md5: 160af56383ad1b40d820cd09f49e2764
-      size: 148
-    - path: metrics/plots.csv
+      md5: bf1301ac4eced45f08e2d8901c161b3a
+      size: 5175041
+    - path: data/processed/X_train_processed.csv
       hash: md5
-      md5: 940d71ae06dd547a2127d42fd275eccc
-      size: 32558
-    - path: models/modelo_salary_rf.pkl
+      md5: 96432f2ee4a8c97d2e71a01b81af937a
+      size: 12071107
+    - path: data/processed/y_test.csv
       hash: md5
-      md5: 57c940a293b98d4c0e903f9c2eb93c3b
-      size: 16264953
+      md5: 16da560177b38d9f1240a5487f3a54d3
+      size: 75808
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 00292a6e14043c48b5725d0e7bad32c5
+      size: 176855
     - path: models/preprocessor.pkl
       hash: md5
-      md5: 83932824e62faaca032c901ffe720de1
-      size: 6464
+      md5: 3f9091b818e9783ecdabae2a45ba5644
+      size: 6656
+  train_logreg:
+    cmd: python -m src.stages.train_logreg
+    deps:
+    - path: data/processed/X_train_processed.csv
+      hash: md5
+      md5: 96432f2ee4a8c97d2e71a01b81af937a
+      size: 12071107
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 00292a6e14043c48b5725d0e7bad32c5
+      size: 176855
+    - path: src/models/logisticRegressionModel.py
+      hash: md5
+      md5: a7fc8e648aae559cb91876a8b4f3ef82
+      size: 905
+    outs:
+    - path: models/logreg_model.pkl
+      hash: md5
+      md5: 1bce1ea5cbb886afd6aaf1b8f4d6afe5
+      size: 4835
+  train_rf:
+    cmd: python -m src.stages.train_rf
+    deps:
+    - path: data/processed/X_train_processed.csv
+      hash: md5
+      md5: 96432f2ee4a8c97d2e71a01b81af937a
+      size: 12071107
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 00292a6e14043c48b5725d0e7bad32c5
+      size: 176855
+    - path: src/models/randomForestModel.py
+      hash: md5
+      md5: 993e1309c6ba467585da39375c247228
+      size: 895
+    outs:
+    - path: models/rf_model.pkl
+      hash: md5
+      md5: 0af8598c9fb869dad6781a199e8b3615
+      size: 14449693
+  train_nn:
+    cmd: python -m src.stages.train_nn
+    deps:
+    - path: data/processed/X_train_processed.csv
+      hash: md5
+      md5: 96432f2ee4a8c97d2e71a01b81af937a
+      size: 12071107
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 00292a6e14043c48b5725d0e7bad32c5
+      size: 176855
+    - path: src/models/neuralNetworkModel.py
+      hash: md5
+      md5: 6c7f279dbb40b2dc2d79cffb6d5f57cb
+      size: 1648
+    params:
+      params.yaml:
+        neural_network.batch_size: 128
+        neural_network.epochs: 100
+    outs:
+    - path: models/neural_network_model.keras
+      hash: md5
+      md5: deae221cc362e707fc85ba74a1803e87
+      size: 139690
+  evaluate:
+    cmd: python -m src.stages.evaluate
+    deps:
+    - path: data/processed/X_test_processed.csv
+      hash: md5
+      md5: bf1301ac4eced45f08e2d8901c161b3a
+      size: 5175041
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 16da560177b38d9f1240a5487f3a54d3
+      size: 75808
+    - path: models/logreg_model.pkl
+      hash: md5
+      md5: 1bce1ea5cbb886afd6aaf1b8f4d6afe5
+      size: 4835
+    - path: models/neural_network_model.keras
+      hash: md5
+      md5: deae221cc362e707fc85ba74a1803e87
+      size: 139690
+    - path: models/rf_model.pkl
+      hash: md5
+      md5: 0af8598c9fb869dad6781a199e8b3615
+      size: 14449693
+    - path: src/models/modelEvaluator.py
+      hash: md5
+      md5: 4e27e52e3bc62d1a405cdf0c87aaac5d
+      size: 1582
+    outs:
+    - path: reports/figures
+      hash: md5
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    - path: reports/metrics.json
+      hash: md5
+      md5: 1311c6a4613b447adfe2079ce8f9c849
+      size: 601
+  tune_rf:
+    cmd: python -m src.stages.tune_rf
+    deps:
+    - path: data/processed/X_train_processed.csv
+      hash: md5
+      md5: 96432f2ee4a8c97d2e71a01b81af937a
+      size: 12071107
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 00292a6e14043c48b5725d0e7bad32c5
+      size: 176855
+    - path: src/models/randomForestTuner.py
+      hash: md5
+      md5: a4426079e1ac4ec660c217486241ad2e
+      size: 1768
+    params:
+      params.yaml:
+        tuner.cv_folds: 5
+        tuner.n_iter: 50
+    outs:
+    - path: models/random_forest_tuned.pkl
+      hash: md5
+      md5: 6eeeb7b400fab09a1412880084182891
+      size: 7634153
+    - path: models/random_search_rf.pkl
+      hash: md5
+      md5: 99f3d180186c4c3fc41d147b2ace4863
+      size: 7650545

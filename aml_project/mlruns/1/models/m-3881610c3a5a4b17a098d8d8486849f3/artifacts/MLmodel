@@ -1,0 +1,20 @@
+artifact_path: file:D:/UMSS/Diplomado/MODULO 5/Labos/SalatyPrediction/aml_project/mlruns/1/models/m-3881610c3a5a4b17a098d8d8486849f3/artifacts
+flavors:
+  keras:
+    data: data
+    keras_backend: tensorflow
+    keras_version: 3.15.1
+    save_exported_model: false
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.keras
+    python_version: 3.13.12
+mlflow_version: 3.15.1
+model_id: m-3881610c3a5a4b17a098d8d8486849f3
+model_size_bytes: 139695
+model_uuid: m-3881610c3a5a4b17a098d8d8486849f3
+prompts: null
+run_id: 474223af57e4472cbad9d9feb69974aa
+utc_time_created: '2026-08-20 13:48:35.623410'
