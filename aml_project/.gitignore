@@ -193,6 +193,11 @@ cython_debug/
 # MLflow
 mlruns/
 mlartifacts/
+mlflow.db
+mlflow.db-shm
+mlflow.db-wal
+# Ignorar bases de datos en subdirectorios incorrectos
+**/aml_prediction/mlflow.db
 
 # DVC - Ignorar credenciales locales
 .dvc/config.local

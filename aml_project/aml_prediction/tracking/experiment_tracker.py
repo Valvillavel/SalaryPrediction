@@ -42,6 +42,7 @@ class MLflowExperimentTracker:
         model,
         X_train, y_train, X_test, y_test,
         params: Dict[str, Any],
+        preprocessor=None,
         data_version: str = "v1.0",
         run_name: str = "run",
         dvc_stage: str = "train",
@@ -55,6 +56,7 @@ class MLflowExperimentTracker:
         :param X_test: features de test (ya transformadas)
         :param y_test: etiquetas de test (0/1)
         :param params: hiperparámetros a asignar con model.set_params(**params)
+        :param preprocessor: ColumnTransformer ya ajustado para loguear como artefacto (opcional)
         :param data_version: hash de dvc/git para trazabilidad
         :param run_name: nombre de la corrida en MLflow
         :param dvc_stage: nombre del stage de DVC que ejecuta este script
@@ -92,6 +94,24 @@ class MLflowExperimentTracker:
             if hasattr(model, "predict_proba"):
                 roc_path = ArtifactGenerator.plot_roc_curve(model, X_test, y_test)
                 mlflow.log_artifact(roc_path, artifact_path="charts")
+
+            # Log del preprocessor si fue pasado
+            if preprocessor is not None:
+                import joblib
+                import tempfile
+                import os
+                
+                # Crear directorio temporal y guardar con nombre fijo
+                temp_dir = tempfile.mkdtemp()
+                preprocessor_path = os.path.join(temp_dir, "preprocessor.pkl")
+                joblib.dump(preprocessor, preprocessor_path)
+                
+                try:
+                    mlflow.log_artifact(preprocessor_path, artifact_path="preprocessor")
+                    print(f"📦 [MLflow] Preprocessor logueado en artifact_path='preprocessor/preprocessor.pkl'")
+                finally:
+                    os.remove(preprocessor_path)
+                    os.rmdir(temp_dir)
 
             # Log del modelo
             input_example = X_test[:5] if hasattr(X_test, "__getitem__") else None

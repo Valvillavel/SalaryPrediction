@@ -15,4 +15,8 @@ pandas
 pyyaml
 imbalanced-learn
 joblib
+fastapi
+uvicorn[standard]
+pydantic
+httpx
 -e .

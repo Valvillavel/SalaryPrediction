@@ -64,6 +64,9 @@ class ModelTrainer:
         os.makedirs("models", exist_ok=True)
         joblib.dump(preprocessor, "models/preprocessor.pkl")
 
+        # Guardar preprocessor como atributo de instancia para pasarlo a MLflow
+        self.preprocessor = preprocessor
+
         return X_train_bal, X_test_t, y_train_bal, y_test
 
     def run(self):
@@ -111,9 +114,9 @@ class ModelTrainer:
             params={
                 "n_estimators": self.params["train"]["n_estimators"],
                 "max_depth": self.params["train"]["max_depth"],
-                "split_ratio": self.params["prepare"]["split_ratio"],
                 "random_state": self.params["prepare"]["random_state"],
             },
+            preprocessor=self.preprocessor,  # ← NUEVO: pasar el preprocessor para loguearlo
             run_name="train",  # Nombre del stage de DVC
             dvc_stage="train",  # Tag para trazabilidad con DVC
             register_as="aml_prediction_Model",  # Registrar en Model Registry
