@@ -2,6 +2,14 @@ preprocessing:
   test_size: 0.3
   random_state: 42
 
+random_forest:
+  n_estimators: 100
+  max_depth: 15
+  min_samples_split: 2
+  min_samples_leaf: 1
+  max_features: sqrt
+  class_weight: balanced
+
 neural_network:
   epochs: 100
   batch_size: 128

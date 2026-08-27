@@ -30,6 +30,13 @@ stages:
       - data/processed/X_train_processed.csv
       - data/processed/y_train.csv
       - src/models/randomForestModel.py
+    params:
+      - random_forest.n_estimators
+      - random_forest.max_depth
+      - random_forest.min_samples_split
+      - random_forest.min_samples_leaf
+      - random_forest.max_features
+      - random_forest.class_weight
     outs:
       - models/rf_model.pkl
 
