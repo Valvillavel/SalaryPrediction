@@ -16,8 +16,10 @@ ml_models: dict = {}
 async def lifespan(app: FastAPI):
     """Carga el preprocesador y el modelo una sola vez, al arrancar el servidor."""
     try:
-        ml_models["preprocessor"] = joblib.load(config.MODELS_DIR / "preprocessor.pkl")
-        ml_models["model"] = joblib.load(config.MODELS_DIR / "random_forest_tuned.pkl")
+        ml_models["preprocessor"] = joblib.load(
+            config.MODELS_DIR / "preprocessor.pkl")
+        ml_models["model"] = joblib.load(
+            config.MODELS_DIR / "random_forest_tuned.pkl")
     except FileNotFoundError:
         # Permite levantar el servicio igual (útil en tests o CI) aunque falten artefactos;
         # /health y /predict avisarán del problema en vez de tumbar el proceso.
@@ -42,7 +44,8 @@ def health():
 @app.post("/predict", response_model=PredictionOutput)
 def predict(payload: SalaryInput):
     if "model" not in ml_models:
-        raise HTTPException(status_code=503, detail="Modelo no disponible. Corre `dvc repro` primero.")
+        raise HTTPException(
+            status_code=503, detail="Modelo no disponible. Corre `dvc repro` primero.")
 
     row = pd.DataFrame([payload.model_dump(by_alias=True)])
     X = ml_models["preprocessor"].transform(row)
@@ -60,7 +63,8 @@ def predict(payload: SalaryInput):
 @app.post("/predict/batch", response_model=list[PredictionOutput])
 def predict_batch(payloads: list[SalaryInput]):
     if "model" not in ml_models:
-        raise HTTPException(status_code=503, detail="Modelo no disponible. Corre `dvc repro` primero.")
+        raise HTTPException(
+            status_code=503, detail="Modelo no disponible. Corre `dvc repro` primero.")
 
     rows = pd.DataFrame([p.model_dump(by_alias=True) for p in payloads])
     X = ml_models["preprocessor"].transform(rows)
@@ -68,7 +72,8 @@ def predict_batch(payloads: list[SalaryInput]):
 
     return [
         PredictionOutput(
-            salary_prediction=(config.POSITIVE_LABEL if p >= 0.5 else " <=50K").strip(),
+            salary_prediction=(config.POSITIVE_LABEL if p >=
+                               0.5 else " <=50K").strip(),
             probability_above_50k=round(float(p), 4),
             model_used="random_forest_tuned",
         )

@@ -11,15 +11,18 @@ class SalaryInput(BaseModel):
     fnlwgt: int = Field(examples=[77516])
     education: str = Field(examples=["Bachelors"])
     education_num: int = Field(alias="education-num", examples=[13])
-    marital_status: str = Field(alias="marital-status", examples=["Never-married"])
+    marital_status: str = Field(
+        alias="marital-status", examples=["Never-married"])
     occupation: str = Field(examples=["Adm-clerical"])
     relationship: str = Field(examples=["Not-in-family"])
     race: str = Field(examples=["White"])
     sex: str = Field(examples=["Male"])
     capital_gain: int = Field(alias="capital-gain", ge=0, examples=[0])
     capital_loss: int = Field(alias="capital-loss", ge=0, examples=[0])
-    hours_per_week: int = Field(alias="hours-per-week", ge=1, le=99, examples=[40])
-    native_country: str = Field(alias="native-country", examples=["United-States"])
+    hours_per_week: int = Field(
+        alias="hours-per-week", ge=1, le=99, examples=[40])
+    native_country: str = Field(
+        alias="native-country", examples=["United-States"])
 
 
 class PredictionOutput(BaseModel):
